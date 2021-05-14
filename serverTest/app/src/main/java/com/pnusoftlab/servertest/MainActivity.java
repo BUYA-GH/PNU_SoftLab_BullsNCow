@@ -2,6 +2,7 @@ package com.pnusoftlab.servertest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,11 +19,10 @@ import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText addressInput; // Host IP inputBox
+    EditText portInput; // Host IP inputBox
     EditText dataInput; // inputBox about data which send to server
+    EditText answerInput;
     Button socketConnectBtn; // button for Send n Connect
-    String str;
-    String addr;
     String response;
 
     Handler handler = new Handler();
@@ -30,29 +31,41 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Log in!");
 
-        addressInput = findViewById(R.id.addressInput);
+        portInput = findViewById(R.id.portInput);
         dataInput = findViewById(R.id.dataInput);
+        answerInput = findViewById(R.id.answerNumInput);
         socketConnectBtn = findViewById(R.id.socketConnectBtn);
 
         socketConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addr = addressInput.getText().toString().trim();
-                str = dataInput.getText().toString();
-                SocketThread thread = new SocketThread(addr, str);
-                thread.start();
+                //System.out.println("Where1");
+                Intent intent = new Intent(getApplicationContext(), SendNumActivity.class);
+                //System.out.println("Where2");
+                String port =  portInput.getText().toString();
+                String answer = answerInput.getText().toString();
+
+                intent.putExtra("Port", Integer.parseInt(port));
+                intent.putExtra("Name", dataInput.getText().toString());
+                intent.putExtra("Answer", Integer.parseInt(answer));
+                startActivity(intent);
             }
         });
     }
 
+
+    /*
     class SocketThread extends Thread {
         String host; // Server IP
-        String data;
+        String name; // name
+        DataOutputStream out;
+
 
         public SocketThread(String host, String data) {
             this.host = host;
-            this.data = data;
+            this.name = name;
         }
 
         @Override
@@ -61,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 int port = 5555;
                 Socket socket = new Socket(host, port);
                 ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream());
-                outstream.writeObject(data);
+                outstream.writeObject(name);
                 outstream.flush();
 
                 ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
@@ -82,5 +95,5 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-    }
+    }*/
 }

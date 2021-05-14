@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class SocketServer {
 	public static void main(String[] args) {
-		int portNumber = 5555;
+		int portNumber = 7777;
 		
 		try {
 			System.out.println("Start Server...");
