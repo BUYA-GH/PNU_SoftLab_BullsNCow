@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:hint="Enter your name"
         android:textSize="20dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="70dp"
         android:layout_gravity="center_horizontal">
     </EditText>
 
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:hint="Enter your Answer"
         android:textSize="20dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         android:layout_gravity="center_horizontal">
     </EditText>
 
@@ -44,5 +44,38 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal">
     </Button>
+
+    <TextView
+        android:id="@+id/myTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal">
+    </TextView>
+
+    <TextView
+        android:id="@+id/myTextEnable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal">
+    </TextView>
+
+    <TextView
+        android:id="@+id/otherTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal">
+    </TextView>
+
+    <TextView
+        android:id="@+id/otherTextEnable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal">
+    </TextView>
 
 </LinearLayout>

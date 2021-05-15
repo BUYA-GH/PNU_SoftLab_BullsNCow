@@ -17,14 +17,15 @@ public class Receiver implements Runnable {
 		this.user = user;
 		in = new DataInputStream(socket.getInputStream());
 		
+		
 		name = in.readUTF();
 		user.AddName(name, socket);
+		user.sendPrev(name);
 	}
 	
 	@Override
 	public void run() {
-		try {
-
+		try {		
 			while(true) {
 				buffer = in.readUTF();
 				//System.out.println(buffer + "is answer?");
@@ -38,9 +39,12 @@ public class Receiver implements Runnable {
 					user.sendAnswer(name, 0);
 				else {
 					user.sendAnswer(name, 1);
-					// break;
-				}			
+					break;
+				}	
 			}
+			
+			user.sendEnable(name);
+			while(true);
 			
 		} catch(Exception e) {
 			user.RemoveClient(this.name);
