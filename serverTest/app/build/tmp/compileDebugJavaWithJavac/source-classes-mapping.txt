@@ -1,9 +1,0 @@
-com/pnusoftlab/servertest/BuildConfig.java
- com.pnusoftlab.servertest.BuildConfig
-com/pnusoftlab/servertest/MainActivity.java
- com.pnusoftlab.servertest.MainActivity
- com.pnusoftlab.servertest.MainActivity$1
-com/pnusoftlab/servertest/SendNumActivity.java
- com.pnusoftlab.servertest.SendNumActivity
- com.pnusoftlab.servertest.SendNumActivity$ClientReceiver
- com.pnusoftlab.servertest.SendNumActivity$ClientSender
