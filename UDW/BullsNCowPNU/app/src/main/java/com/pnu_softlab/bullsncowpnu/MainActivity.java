@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
+
         List<Integer> pinlist = new ArrayList<Integer>();
         //gps로 위치추적하는거 만들어야되
         //이거 핀찾는데에 쓸수있을거 같음

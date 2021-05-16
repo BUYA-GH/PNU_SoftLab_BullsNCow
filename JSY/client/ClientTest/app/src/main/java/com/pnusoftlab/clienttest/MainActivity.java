@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try{
-                            socket = new Socket("211.109.68.18",7777);
+                            socket = new Socket("192.168.1.109",7777);
                             in = new DataInputStream(socket.getInputStream());
                             out = new DataOutputStream(socket.getOutputStream());
 
