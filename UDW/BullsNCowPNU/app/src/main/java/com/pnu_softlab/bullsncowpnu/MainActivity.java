@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,8 +94,47 @@ public class MainActivity extends AppCompatActivity
         Pins.put("rainbow", rainbow);
         pin north = new pin(35.2355016, 129.0828778);
         Pins.put("north", north);
-        pin lib1 = new pin(35.23568843,129.0813636);
-        Pins.put("lib1", lib1);
+
+        pin lib1 = new pin(35.233903,129.078703);
+        Pins.put("lib1", lib1);//중앙
+        pin lib2 = new pin(35.235681,129.0816332);
+        Pins.put("lib2", lib2);//새벽별
+        pin playground = new pin(35.231735, 129.082916);
+        Pins.put("Playground", playground);//넉터
+        pin gonguri = new pin(35.231510, 129.080128);
+        Pins.put("gonguri", gonguri);//건설관
+        pin tesla  = new pin(35.233170,129.08377);
+        Pins.put("tesla", tesla);//항공
+        pin inmoon = new pin(35.231859, 129.081144);
+        Pins.put("inmoon", inmoon);//인문
+        pin hall1 = new pin(35.235318, 129.080495);
+        Pins.put("hall1", hall1);//금정회관
+        pin hall2 = new pin(35.235325,129.076707);
+        Pins.put("hall2", hall2);//학생회관
+        pin hall3 = new pin(35.234214, 129.079518);
+        Pins.put("hall3", hall3);//샛별회관
+        pin hall4 = new pin(35.233923, 129.081941);
+        Pins.put("hall4", hall4);//문창회관
+        pin art = new pin(35.232564, 129.077607);
+        Pins.put("art", art);//예술관
+        pin bio = new pin(35.234542, 129.081106);
+        Pins.put("bio", bio);//생물관
+        pin out_Glo = new pin(35.235861, 129083604);
+        Pins.put("out_Glo",out_Glo);//언어교육원
+        pin law = new pin(35.236746, 129.078729);
+        Pins.put("law", law);//법학관
+        pin tower = new pin(35.230972,129.0813167);
+        Pins.put("tower", tower);//웅비의 탑
+        pin slave = new pin(35.234987,129.082492);
+        Pins.put("slave", slave);//실험동및 전산원
+        pin heo_polit = new pin(35.236312,129.079920);
+        Pins.put("polit",heo_polit);//경영관
+        pin chem = new pin(35.235166,129.077992);
+        Pins.put("chem", chem);//화학관
+        pin drug = new pin(35.232568,129.078467);
+        Pins.put("drug", drug);//약학관
+        pin bio_en = new pin(35.2337672137374, 129.08083534111876);
+        Pins.put("bio_en", bio_en);//자연과학관
     }
 
     @Override
@@ -113,7 +153,7 @@ public class MainActivity extends AppCompatActivity
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
-        naverMap.setMinZoom(15.0);
+        naverMap.setMinZoom(14.0);
         naverMap.setMaxZoom(18.0);
         naverMap.setExtent(new LatLngBounds(new LatLng(35.230684, 129.075435), new LatLng(35.237382,129.084256)));
 
@@ -122,6 +162,9 @@ public class MainActivity extends AppCompatActivity
             Map.Entry<String, pin> entry = entries.next();
             Marker marker = new Marker();
             marker.setPosition(new LatLng(entry.getValue().latitude, entry.getValue().longitude));
+            marker.setWidth(70);
+            marker.setHeight(70);
+            marker.setIconTintColor(Color.RED);
             marker.setMap(naverMap);
             Markers.put(entry.getKey(), marker);
         }
