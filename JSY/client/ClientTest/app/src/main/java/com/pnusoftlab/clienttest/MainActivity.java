@@ -1,25 +1,67 @@
 package com.pnusoftlab.clienttest;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
+    final int STATUS_DISCONNECTED = 0;
+    final int STATUS_CONNECTED = 1;
+
+    String ip = "192.168.1.109";
+    String name = null;
+    SocketManager manager = null;
+
+    EditText nameInput;
+    EditText answerInput;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        nameInput = findViewById(R.id.nameInput);
+        answerInput = findViewById(R.id.answerNumInput);
+        Log.i("MainActivity", "onCreate()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("MainActivity", "onResume()");
+        // get SocketManager instance
+        manager = SocketManager.getInstance();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    public void connectToServer(View v) throws RemoteException {
+        manager.setSocket(ip);
+        manager.connect();
+
+        name = nameInput.getText().toString();
+        manager.send(name);
+    }
+
+    public void sendAnswer(View v) throws RemoteException {
+        if(manager.getStatus() == STATUS_CONNECTED){
+            String answer = answerInput.getText().toString();
+            manager.send(answer);
+        } else {
+            Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /*
     EditText nameInput;
     EditText answerInput;
     Button socketConnectBtn;
@@ -128,5 +170,5 @@ public class MainActivity extends AppCompatActivity {
                 }).start();
             }
         });
-    }
+    }*/
 }

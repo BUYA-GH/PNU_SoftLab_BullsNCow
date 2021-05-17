@@ -22,7 +22,8 @@
         android:text="CONNECT"
         android:textSize="24dp"
         android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:onClick="connectToServer">
     </Button>
 
     <EditText
@@ -42,7 +43,8 @@
         android:text="SEND ANSWER"
         android:textSize="24dp"
         android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:onClick="sendAnswer">
     </Button>
 
     <TextView
