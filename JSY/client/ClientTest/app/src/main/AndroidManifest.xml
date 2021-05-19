@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pnusoftlab.clienttest">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".SocketManager"
         android:allowBackup="true"
@@ -10,11 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientTest">
+
         <service
             android:name=".ConnectionService"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true"></service>
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -24,5 +26,5 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
