@@ -80,4 +80,15 @@
         android:layout_gravity="center_horizontal">
     </TextView>
 
+    <Button
+        android:id="@+id/refreshBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="REFRESH"
+        android:textSize="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="right"
+        android:onClick="receiveData">
+    </Button>
+
 </LinearLayout>

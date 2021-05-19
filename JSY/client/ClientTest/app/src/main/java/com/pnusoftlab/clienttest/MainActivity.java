@@ -2,13 +2,17 @@ package com.pnusoftlab.clienttest;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     final int STATUS_DISCONNECTED = 0;
@@ -16,10 +20,13 @@ public class MainActivity extends AppCompatActivity {
 
     String ip = "211.109.68.18";
     String name = null;
+    String otherName = null;
     SocketManager manager = null;
 
     EditText nameInput;
     EditText answerInput;
+    HashMap<String, TextView> textNameMap = new HashMap<String, TextView>();
+    HashMap<String, TextView> textEnableMap = new HashMap<String, TextView>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
         manager.setSocket(ip);
         manager.connect(name);
 
+        textNameMap.put(name, (TextView)findViewById(R.id.myTextName));
+        textEnableMap.put(name, (TextView)findViewById(R.id.myTextEnable));
+        textNameMap.get(name).setText("Name : " + name);
+        textEnableMap.get(name).setText("Enable : ");
+        Toast.makeText(MainActivity.this, "Connected With Server", Toast.LENGTH_SHORT).show();
     }
 
     public void sendAnswer(View v) throws RemoteException {
@@ -57,6 +69,42 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void receiveData(View v) throws RemoteException {
+        if(manager.getStatus() == STATUS_CONNECTED) {
+            manager.receive();
+        } else {
+            Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        processIntent(intent);
+    }
+    private void processIntent(Intent intent) {
+        if(intent != null) {
+            String buffer = intent.getStringExtra("Receive");
+            String [] set = buffer.split(":");
+
+            if(set[0].equals("OTHER")){
+                otherName = set[1];
+                textNameMap.put(otherName, (TextView)findViewById(R.id.otherTextName));
+                textEnableMap.put(otherName, (TextView)findViewById(R.id.otherTextEnable));
+                textNameMap.get(otherName).setText("Name : " + otherName);
+                textEnableMap.get(otherName).setText("Enable : ");
+            } else if(set[0].equals("ANSWER")) {
+                if(set[1].equals("Fail"))
+                    Toast.makeText(MainActivity.this, "Wrong Answer, Try Again", Toast.LENGTH_SHORT).show();
+                else if(set[1].equals("Success"))
+                    Toast.makeText(MainActivity.this, "Correct Answer, Please wait", Toast.LENGTH_SHORT).show();
+            } else if(set[0].equals("ENABLE")) {
+                textEnableMap.get(set[1]).setText("Enable : " + set[2]);
+            }
+        }
+
     }
 
 

@@ -96,7 +96,6 @@ public class ConnectionService extends Service {
         Log.i("ConnectionService", "mySetSocket()");
     }
 
-    // why socket is return error?
     void myConnect(String name) {
         Log.i("ConnectionService", "myConnect1()");
         socket = new Socket();
@@ -107,7 +106,9 @@ public class ConnectionService extends Service {
                     socket.connect(socketAddress, TIME_OUT);
                     out = new DataOutputStream(socket.getOutputStream());
                     in = new DataInputStream(socket.getInputStream());
+
                     out.writeUTF(name);
+                    out.flush();
                     Log.i("ConnectionService", "myConnect2()");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -119,6 +120,7 @@ public class ConnectionService extends Service {
 
     void myDisconnect() {
         try {
+            Log.i("ConnectionService", "myDisconnect()");
             in.close();
             out.close();
             socket.close();
@@ -133,6 +135,7 @@ public class ConnectionService extends Service {
             @Override
             public void run() {
                 try {
+                    Log.i("ConnectionService", "mySend()");
                     out.writeUTF(outBuffer);
                     out.flush();
                 } catch (IOException e) {
@@ -147,8 +150,14 @@ public class ConnectionService extends Service {
             @Override
             public void run() {
                 try {
+                    Log.i("ConnectionService", "myReceive()");
                     String inBuffer = in.readUTF();
 
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("Receive", inBuffer);
+
+                    startActivity(intent);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
