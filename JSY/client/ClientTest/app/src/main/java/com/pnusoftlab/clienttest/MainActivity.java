@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     final int STATUS_DISCONNECTED = 0;
     final int STATUS_CONNECTED = 1;
 
-    String ip = "192.168.1.109";
+    String ip = "211.109.68.18";
     String name = null;
     SocketManager manager = null;
 
@@ -44,11 +44,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectToServer(View v) throws RemoteException {
-        manager.setSocket(ip);
-        manager.connect();
-
         name = nameInput.getText().toString();
-        manager.send(name);
+        manager.setSocket(ip);
+        manager.connect(name);
+
     }
 
     public void sendAnswer(View v) throws RemoteException {

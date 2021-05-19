@@ -37,19 +37,23 @@ public class ConnectionService extends Service {
             mySetSocket(ip);
         }
 
-        @Override public void connect() throws RemoteException {
-            myConnect();
+        @Override
+        public void connect(String name) throws RemoteException {
+            myConnect(name);
         }
 
-        @Override public void disconnect() throws RemoteException {
+        @Override
+        public void disconnect() throws RemoteException {
             myDisconnect();
         }
 
-        @Override public void send(String buffer) throws RemoteException {
+        @Override
+        public void send(String buffer) throws RemoteException {
             mySend(buffer);
         }
 
-        @Override public void receive() throws RemoteException {
+        @Override
+        public void receive() throws RemoteException {
             myReceive();
         }
     };
@@ -92,7 +96,8 @@ public class ConnectionService extends Service {
         Log.i("ConnectionService", "mySetSocket()");
     }
 
-    void myConnect() {
+    // why socket is return error?
+    void myConnect(String name) {
         Log.i("ConnectionService", "myConnect1()");
         socket = new Socket();
         new Thread(new Runnable() {
@@ -102,6 +107,7 @@ public class ConnectionService extends Service {
                     socket.connect(socketAddress, TIME_OUT);
                     out = new DataOutputStream(socket.getOutputStream());
                     in = new DataInputStream(socket.getInputStream());
+                    out.writeUTF(name);
                     Log.i("ConnectionService", "myConnect2()");
                 } catch (IOException e) {
                     e.printStackTrace();

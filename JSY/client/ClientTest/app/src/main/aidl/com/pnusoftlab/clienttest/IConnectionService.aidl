@@ -10,7 +10,7 @@ interface IConnectionService {
      */
     int getStatus();
     void setSocket(String ip);
-    void connect();
+    void connect(String name);
     void disconnect();
     void send(String buffer);
     void receive();

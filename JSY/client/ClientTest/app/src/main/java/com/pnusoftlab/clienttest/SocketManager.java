@@ -59,8 +59,8 @@ public class SocketManager extends Application {
         binder.setSocket(ip);
     }
 
-    void connect() throws RemoteException {
-        binder.connect();
+    void connect(String name) throws RemoteException {
+        binder.connect(name);
     }
 
     void disconnect() throws RemoteException {
