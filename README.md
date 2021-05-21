@@ -26,7 +26,7 @@ If this content needs to move in CONTRIBUTOR.md, it will do.
     String [] set = inBuffer.split(":");
     ```
 
-    - Change MapActivity's layout to TabLayout
+- Change MapActivity's layout to TabLayout
     To make memo for Users's Bulls & Cow game, we think TabLayout will make user more comportable to play this game application.
 
 ## 2. Work Completed
