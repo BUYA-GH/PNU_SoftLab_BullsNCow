@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     final int STATUS_DISCONNECTED = 0;
     final int STATUS_CONNECTED = 1;
 
-    String ip = "192.168.1.109";
+    String ip = "211.109.68.18";
     String name = null;
     String otherName = null;
     SocketManager manager = null;
