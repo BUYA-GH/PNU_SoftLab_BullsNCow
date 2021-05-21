@@ -91,4 +91,15 @@
         android:onClick="receiveData">
     </Button>
 
+    <Button
+        android:id="@+id/disconnectBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disconnect"
+        android:textSize="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="right"
+        android:onClick="disconnect">
+    </Button>
+
 </LinearLayout>

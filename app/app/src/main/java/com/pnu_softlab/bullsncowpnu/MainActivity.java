@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         if (manager.getStatus() == STATUS_CONNECTED) {
             String answer = answerInput.getText().toString();
             manager.send(answer);
-
         } else {
             Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
         }
@@ -79,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
             manager.receive();
         } else {
             Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void disconnect(View v) throws RemoteException {
+        if (manager.getStatus() == STATUS_CONNECTED) {
+            manager.disconnect();
+        } else {
+            Toast.makeText(this, "Already disconnected to Server", Toast.LENGTH_SHORT).show();
         }
     }
 

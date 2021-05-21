@@ -138,6 +138,7 @@ public class ConnectionService extends Service {
                     Log.i("ConnectionService", "mySend()");
                     out.writeUTF(outBuffer);
                     out.flush();
+                    myReceive();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
