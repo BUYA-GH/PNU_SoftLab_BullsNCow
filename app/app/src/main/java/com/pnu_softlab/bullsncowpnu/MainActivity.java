@@ -1,10 +1,12 @@
 package com.pnu_softlab.bullsncowpnu;
 
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -13,11 +15,27 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
+import com.naver.maps.geometry.Utmk;
+import com.naver.maps.map.CameraPosition;
+import com.naver.maps.map.LocationTrackingMode;
+import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.NaverMapOptions;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.util.FusedLocationSource;
+
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     final int STATUS_DISCONNECTED = 0;
     final int STATUS_CONNECTED = 1;
+    final int STATUS_READY = 2;
 
     String ip = "211.109.68.18";
     String name = null;
@@ -29,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     HashMap<String, TextView> textNameMap = new HashMap<String, TextView>();
     HashMap<String, TextView> textEnableMap = new HashMap<String, TextView>();
+    HashMap<String, Integer> clientNumMap = new HashMap<String, Integer>();
+    int[] enable = {0, 0};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         textNameMap.put(name, (TextView) findViewById(R.id.myTextName));
         textEnableMap.put(name, (TextView) findViewById(R.id.myTextEnable));
+        clientNumMap.put(name, (Integer)0);
         textNameMap.get(name).setText("Name : " + name);
         textEnableMap.get(name).setText("Enable : ");
         Toast.makeText(MainActivity.this, "Connected With Server", Toast.LENGTH_SHORT).show();
@@ -68,24 +89,20 @@ public class MainActivity extends AppCompatActivity {
         if (manager.getStatus() == STATUS_CONNECTED) {
             String answer = answerInput.getText().toString();
             manager.send(answer);
+
         } else {
             Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void receiveData(View v) throws RemoteException {
-        if (manager.getStatus() == STATUS_CONNECTED) {
-            manager.receive();
-        } else {
-            Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
+    public void gotoMapActivity(View v)  {
+        if(enable[0] == 2 && enable[1] == 2) {
+            // go to MapActivity
+            Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+            startActivity(intent);
         }
-    }
-
-    public void disconnect(View v) throws RemoteException {
-        if (manager.getStatus() == STATUS_CONNECTED) {
-            manager.disconnect();
-        } else {
-            Toast.makeText(this, "Already disconnected to Server", Toast.LENGTH_SHORT).show();
+        else {
+            Toast.makeText(this, "All player is not ready!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -104,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 otherName = set[1];
                 textNameMap.put(otherName, (TextView) findViewById(R.id.otherTextName));
                 textEnableMap.put(otherName, (TextView) findViewById(R.id.otherTextEnable));
+                clientNumMap.put(name, (Integer)1);
                 textNameMap.get(otherName).setText("Name : " + otherName);
                 textEnableMap.get(otherName).setText("Enable : ");
             } else if (set[0].equals("ANSWER")) {
@@ -113,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Correct Answer, Please wait", Toast.LENGTH_SHORT).show();
             } else if (set[0].equals("ENABLE")) {
                 textEnableMap.get(set[1]).setText("Enable : " + set[2]);
+                enable[clientNumMap.get(name)] = Integer.parseInt(set[2]);
             }
         }
 

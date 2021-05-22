@@ -109,6 +109,7 @@ public class ConnectionService extends Service {
 
                     out.writeUTF(name);
                     out.flush();
+                    myReceive();
                     Log.i("ConnectionService", "myConnect2()");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -138,7 +139,6 @@ public class ConnectionService extends Service {
                     Log.i("ConnectionService", "mySend()");
                     out.writeUTF(outBuffer);
                     out.flush();
-                    myReceive();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -150,15 +150,24 @@ public class ConnectionService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.i("ConnectionService", "myReceive()");
                 try {
-                    Log.i("ConnectionService", "myReceive()");
-                    String inBuffer = in.readUTF();
+                    while(true) {
+                        String inBuffer = in.readUTF();
+                        String [] set = inBuffer.split(":");
+                        Intent intent = null;
+                        if(set[0] == "OTHER" || set[0] == "OTHER" || set[0] == "ENABLE") {
+                            intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("Receive", inBuffer);
+                        } else {
+                            intent = new Intent(getApplicationContext(), MapActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("Receive", inBuffer);
+                        }
 
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("Receive", inBuffer);
-
-                    startActivity(intent);
+                        startActivity(intent);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
