@@ -98,6 +98,11 @@ public class User {
         }
 	}
 	
+	public synchronized boolean getEnable() {
+		if(enable[0] == 2 && enable[1] == 2) return true;
+		return false;
+	}
+	
 	public synchronized void sendStartPin(String name) {
 		try {
 			if(nummap.get(name) == 0) {

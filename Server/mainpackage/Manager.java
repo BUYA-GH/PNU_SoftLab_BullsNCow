@@ -46,10 +46,14 @@ public class Manager implements Runnable {
 			}
 			user.sendEnable(name);
 			
+			buffer = in.readUTF();
+			//this.wait(10000);
+			
 			// Start Game
 			user.sendStartPin(name);
 			
 			user.sendPins(name);
+			while(true);
 			
 		} catch(Exception e) {
 			user.RemoveClient(this.name);

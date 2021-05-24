@@ -156,15 +156,13 @@ public class ConnectionService extends Service {
                         String inBuffer = in.readUTF();
                         String [] set = inBuffer.split(":");
                         Intent intent = null;
-                        if(set[0] == "OTHER" || set[0] == "OTHER" || set[0] == "ENABLE") {
+                        if(set[0].equals("OTHER") || set[0].equals("ANSWER") || set[0].equals("ENABLE") ) {
                             intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("Receive", inBuffer);
                         } else {
                             intent = new Intent(getApplicationContext(), MapActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("Receive", inBuffer);
                         }
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("Receive", inBuffer);
 
                         startActivity(intent);
                     }

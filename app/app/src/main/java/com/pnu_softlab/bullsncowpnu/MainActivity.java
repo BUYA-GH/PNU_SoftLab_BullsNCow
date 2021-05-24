@@ -73,19 +73,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectToServer(View v) throws RemoteException {
+        Log.i("MainActivity", "connectToServer()");
         name = nameInput.getText().toString();
         manager.setSocket(ip);
         manager.connect(name);
 
         textNameMap.put(name, (TextView) findViewById(R.id.myTextName));
         textEnableMap.put(name, (TextView) findViewById(R.id.myTextEnable));
-        clientNumMap.put(name, (Integer)0);
+        clientNumMap.put(name, 0);
         textNameMap.get(name).setText("Name : " + name);
         textEnableMap.get(name).setText("Enable : ");
         Toast.makeText(MainActivity.this, "Connected With Server", Toast.LENGTH_SHORT).show();
     }
 
     public void sendAnswer(View v) throws RemoteException {
+        Log.i("MainActivity", "sendAnswer()");
         if (manager.getStatus() == STATUS_CONNECTED) {
             String answer = answerInput.getText().toString();
             manager.send(answer);
@@ -96,7 +98,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void gotoMapActivity(View v)  {
+        Log.i("MainActivity", "gotoMapActivity()");
+        Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
+
         if(enable[0] == 2 && enable[1] == 2) {
+            try {
+                manager.send("GO");
+            } catch(RemoteException e) {
+                e.printStackTrace();
+            }
+
             // go to MapActivity
             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
             startActivity(intent);
@@ -115,15 +126,17 @@ public class MainActivity extends AppCompatActivity {
     private void processIntent(Intent intent) {
         if (intent != null) {
             String buffer = intent.getStringExtra("Receive");
+            Log.d("receiver", "Receive data : " + buffer);
             String[] set = buffer.split(":");
 
             if (set[0].equals("OTHER")) {
                 otherName = set[1];
                 textNameMap.put(otherName, (TextView) findViewById(R.id.otherTextName));
                 textEnableMap.put(otherName, (TextView) findViewById(R.id.otherTextEnable));
-                clientNumMap.put(name, (Integer)1);
+                clientNumMap.put(otherName, 1);
                 textNameMap.get(otherName).setText("Name : " + otherName);
                 textEnableMap.get(otherName).setText("Enable : ");
+                Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
             } else if (set[0].equals("ANSWER")) {
                 if (set[1].equals("Fail"))
                     Toast.makeText(MainActivity.this, "Wrong Answer, Try Again", Toast.LENGTH_SHORT).show();
@@ -131,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Correct Answer, Please wait", Toast.LENGTH_SHORT).show();
             } else if (set[0].equals("ENABLE")) {
                 textEnableMap.get(set[1]).setText("Enable : " + set[2]);
-                enable[clientNumMap.get(name)] = Integer.parseInt(set[2]);
+                enable[clientNumMap.get(set[1])] = Integer.parseInt(set[2]);
+                Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
             }
         }
 

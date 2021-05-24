@@ -28,8 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class MapActivity extends AppCompatActivity
-        implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
@@ -39,7 +38,7 @@ public class MapActivity extends AppCompatActivity
     public TextView eText;
 
     //pin 관련 나중에 pin지우고 LatLng로 교체하고 밑에 고치는게 나을듯
-    public HashMap<String,pin> Pins = new HashMap<>();
+    public HashMap<String, pin> Pins = new HashMap<String, pin>();
     public HashMap<String, Marker> Markers = new HashMap<>();
 
     class pin{
@@ -68,9 +67,9 @@ public class MapActivity extends AppCompatActivity
         eText = (TextView)findViewById(R.id.textView);
         //eText.setText();
 
+        manager = SocketManager.getInstance();
 
-        locationSource =
-                new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
         CameraPosition cameraPosition = new CameraPosition(
                 new LatLng(35.230974, 129.082301),
                 16,
@@ -92,14 +91,6 @@ public class MapActivity extends AppCompatActivity
         }
 
         mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    protected void onResume() {
-        Log.i("MapActivity", "onResume()");
-        super.onResume();
-        // get SocketManager instance
-        manager = SocketManager.getInstance();
     }
 
     @Override
@@ -181,5 +172,28 @@ public class MapActivity extends AppCompatActivity
                 eText.setText(result);
             }
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        processIntent(intent);
+    }
+
+    private void processIntent(Intent intent) {
+        if (intent != null) {
+            String buffer = intent.getStringExtra("Receive");
+            String[] set = buffer.split(":");
+
+            if(set[0].equals("PIN")) {
+                double lat = Double.parseDouble(set[2]);
+                double longt = Double.parseDouble(set[3]);
+                String name = set[1];
+
+                pin lng = new pin(lat, longt);
+                Pins.put(name, lng);
+            }
+        }
+
     }
 }
