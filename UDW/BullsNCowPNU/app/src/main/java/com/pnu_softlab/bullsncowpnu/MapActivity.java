@@ -69,23 +69,13 @@ public class MapActivity extends AppCompatActivity
 
         locationSource =
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-        CameraPosition cameraPosition = new CameraPosition(
-                new LatLng(35.230974, 129.082301),
-                16,
-                0,
-                0
-        );
-
-        NaverMapOptions options = new NaverMapOptions()
-                .camera(cameraPosition)
-                .locationButtonEnabled(true);
 
 
         FragmentManager fm = getSupportFragmentManager();
         MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
 
         if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance(options);
+            mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map, mapFragment).commit();
         }
         pin rainbow = new pin(35.2300507,129.0828376);

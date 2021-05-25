@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.tabs.TabLayout;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.geometry.Utmk;
@@ -37,31 +40,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public TextView eText;
 
-    //pin 관련 나중에 pin지우고 LatLng로 교체하고 밑에 고치는게 나을듯
-    public HashMap<String, pin> Pins = new HashMap<String, pin>();
+    public HashMap<String, Utmk> Pins = new HashMap<String, Utmk>();
     public HashMap<String, Marker> Markers = new HashMap<>();
-
-    class pin{
-        double latitude;
-        double longitude;
-
-        pin(double latitude,  double longitude){
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-    }
-    //이하 pin관련해서 받아서 생성
-    //
-    //아무튼 받아서
-    //Utmk utmk = Utmk.valueOf(new LatLng(받은거위도, 받은거경도));
-    //넣을때 pin.latitude = utmk.x;
-    // pin.longitude = utmk.y;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("MapActivity", "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        TabHost tabHost1 = (TabHost) findViewById(R.id.tabHost1);
+        tabHost1.setup();
+
+        TabHost.TabSpec ts1 = tabHost1.newTabSpec("Tab Spec 1") ;
+        ts1.setContent(R.id.content1) ;
+        ts1.setIndicator("TAB 1") ;
+        tabHost1.addTab(ts1)  ;
+
+        TabHost.TabSpec ts2 = tabHost1.newTabSpec("Tab Spec 2") ;
+        ts2.setContent(R.id.content2) ;
+        ts2.setIndicator("TAB 2") ;
+        tabHost1.addTab(ts2) ;
 
         //위에서 받아서 스트링만들고 그거 출력
         eText = (TextView)findViewById(R.id.textView);
@@ -115,11 +113,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
         //나중에 서버에서 받은것들만 처리
-        Iterator<Map.Entry<String, pin>> entries = Pins.entrySet().iterator();
+        Iterator<Map.Entry<String, Utmk>> entries = Pins.entrySet().iterator();
         while(entries.hasNext()) {
-            Map.Entry<String, pin> entry = entries.next();
+            Map.Entry<String, Utmk> entry = entries.next();
             Marker marker = new Marker();
-            marker.setPosition(new LatLng(entry.getValue().latitude, entry.getValue().longitude));
+            LatLng latLng = entry.getValue().toLatLng();
+            marker.setPosition(latLng);
             marker.setWidth(70);
             marker.setHeight(70);
             marker.setIconTintColor(Color.RED);
@@ -137,21 +136,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             String tmp = new String();
             Utmk locationUtmk = Utmk.valueOf(new LatLng(location.getLatitude(),location.getLongitude()));
-            Iterator<Map.Entry<String, pin>> entriesA = Pins.entrySet().iterator();
+            Iterator<Map.Entry<String, Utmk>> entriesA = Pins.entrySet().iterator();
             while(entriesA.hasNext()){
-                Map.Entry<String, pin> entry = entriesA.next();
-                Utmk entryUtmk = Utmk.valueOf(new LatLng(entry.getValue().latitude, entry.getValue().longitude));
-                if((Math.pow(entryUtmk.x - locationUtmk.x, 2) + Math.pow(entryUtmk.y - locationUtmk.y, 2)) <= Math.pow(15,2)) {
-                    //공격권주고 서버로 처리
-
-
-                    //
+                Map.Entry<String, Utmk> entry = entriesA.next();
+                if((Math.pow(entry.getValue().x - locationUtmk.x, 2) + Math.pow(entry.getValue().y - locationUtmk.y, 2)) <= Math.pow(15,2)) {
                     Intent intent = new Intent(this, PopupActivity.class);
                     intent.putExtra("data", "Test Popup");
                     startActivityForResult(intent, 1);
-                    Markers.get(entry.getKey()).setMap(null);
-                    Markers.remove(entry.getKey());
                     tmp = entry.getKey();
+                    Markers.get(tmp).setMap(null);
+                    Markers.remove(entry.getKey());
+
                     Toast.makeText(MapActivity.this, "Correct Answer, Please wait", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -189,9 +184,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 double lat = Double.parseDouble(set[2]);
                 double longt = Double.parseDouble(set[3]);
                 String name = set[1];
+                LatLng latLng = new LatLng(lat,longt);
+                Utmk utmk = Utmk.valueOf(latLng);
 
-                pin lng = new pin(lat, longt);
-                Pins.put(name, lng);
+                Pins.put(name, utmk);
             }
         }
 
