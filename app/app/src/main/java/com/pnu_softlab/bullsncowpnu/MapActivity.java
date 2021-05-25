@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public HashMap<String, Utmk> Pins = new HashMap<String, Utmk>();
     public HashMap<String, Marker> Markers = new HashMap<>();
+    private int count = 1;
+    private String s = null;
+    private String answer = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("MapActivity", "onCreate()");
@@ -53,38 +57,32 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         TabHost.TabSpec ts1 = tabHost1.newTabSpec("Tab Spec 1") ;
         ts1.setContent(R.id.content1) ;
-        ts1.setIndicator("TAB 1") ;
+        ts1.setIndicator("지도") ;
         tabHost1.addTab(ts1)  ;
 
         TabHost.TabSpec ts2 = tabHost1.newTabSpec("Tab Spec 2") ;
         ts2.setContent(R.id.content2) ;
-        ts2.setIndicator("TAB 2") ;
+        ts2.setIndicator("전적") ;
         tabHost1.addTab(ts2) ;
 
         //위에서 받아서 스트링만들고 그거 출력
+        Intent intent = getIntent();
+        String data = intent.getStringExtra("data");
+
         eText = (TextView)findViewById(R.id.textView);
-        //eText.setText();
+        answer = intent.getStringExtra("answer");
+        s = "Round: " + count + "\n" + "Your num is: " + answer;
+        eText.setText(s);
 
         manager = SocketManager.getInstance();
 
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-        CameraPosition cameraPosition = new CameraPosition(
-                new LatLng(35.230974, 129.082301),
-                16,
-                0,
-                0
-        );
-
-        NaverMapOptions options = new NaverMapOptions()
-                .camera(cameraPosition)
-                .locationButtonEnabled(true);
-
 
         FragmentManager fm = getSupportFragmentManager();
         MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
 
         if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance(options);
+            mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map, mapFragment).commit();
         }
 
@@ -163,8 +161,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 //데이터 받기
-                String result = data.getStringExtra("result");
-                eText.setText(result);
+                count++;
+                s = "Round: " + count + "\n" + "Your num is: " + answer;
+                eText.setText(s);
             }
         }
     }

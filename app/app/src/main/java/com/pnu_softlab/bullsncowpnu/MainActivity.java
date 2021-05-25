@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     String ip = "192.168.1.109";//유동운
     String name = null;
     String otherName = null;
+    String answer = null;
     SocketManager manager = null;
 
     EditText nameInput;
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     public void sendAnswer(View v) throws RemoteException {
         Log.i("MainActivity", "sendAnswer()");
         if (manager.getStatus() == STATUS_CONNECTED) {
-            String answer = answerInput.getText().toString();
+            answer = answerInput.getText().toString();
             manager.send(answer);
 
         } else {
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
             // go to MapActivity
             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+            intent.putExtra("answer",answer);
             startActivity(intent);
         }
         else {

@@ -40,6 +40,11 @@
                         android:id="@+id/textView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textSize="20dp"
+                        android:lineSpacingExtra="5dp"
+                        android:background="#4572C4"
+                        android:textColor="#FFFFFF"
                         android:text="TextView" />
 
                     <fragment
