@@ -43,6 +43,7 @@ public class Manager implements Runnable {
 					break;
 				}	
 			}
+			user.setAnswer(name, answer);
 			user.sendEnable(name);
 			
 			buffer = in.readUTF();
@@ -57,6 +58,7 @@ public class Manager implements Runnable {
 				user.sendUnablePin(name, user.getStartPin(name));
 			}
 			
+			// Server는 두개의 client가 시작핀에 있기 전까지 while 안에서 돔
 			while(!user.isGameReady());
 			
 			user.sendAllisReady(name);
@@ -67,6 +69,8 @@ public class Manager implements Runnable {
 				if(set[0].equals("ARRIVE")) {
 					user.sendUnablePin(name, set[1]);
 				}
+				
+			
 			}
 			
 			while(true);

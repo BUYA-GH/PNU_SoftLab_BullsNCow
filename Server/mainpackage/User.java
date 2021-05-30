@@ -11,6 +11,7 @@ public class User {
 	HashMap<String, Integer> nummap = new HashMap<String, Integer>();
 	HashMap<String, String> startmap = new HashMap<String, String>();
 	int[] enable = {0, 0};
+	int[][] answer = { {0,0,0}, {0,0,0}}; 
 	int count = 0;
 	int round = 1;
 	
@@ -30,6 +31,12 @@ public class User {
 	public boolean isGameReady() {
 		if(enable[0] == 3 && enable[1] == 3) return true;
 		else return false;
+	}
+	
+	public void setAnswer(String name, int[] ans) {
+		for(int i = 0; i < 3; ++i) {
+			answer[nummap.get(name)][i] = ans[i];
+		}
 	}
 	
 	public synchronized void sendPrev(String name) {
@@ -156,7 +163,10 @@ public class User {
 				while(keys.hasNext()) {
 					String clientName = (String)keys.next();
 					clientmap.get(clientName).writeUTF("UNABLE:"+pin);
-					clientmap.get(clientName).writeUTF("POPUP");
+					if(clientName.equals(name))
+						clientmap.get(clientName).writeUTF("POPUP:1");
+					else
+						clientmap.get(clientName).writeUTF("POPUP:0");
 				}
 				lng.setPin(pin, 0);
 				round++;
