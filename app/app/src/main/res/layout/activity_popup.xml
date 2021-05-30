@@ -36,6 +36,13 @@
             android:layout_marginBottom="3dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/etext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Guess opponent answer"
+            android:textSize="15dp"
+            android:layout_marginBottom="3dp" />
     </LinearLayout>
     <!-- Notice -->
 
@@ -52,6 +59,7 @@
         android:layout_height="wrap_content">
         <Button
             android:text="확인"
+            android:id="@+id/closeBtn"
             android:textSize="15sp"
             android:textColor="#ff7a00"
             android:padding="16dp"

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.naver.maps.geometry.LatLng;
@@ -32,6 +33,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static java.lang.Integer.parseInt;
+
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
@@ -40,16 +43,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     SocketManager manager = null;
 
     public TextView eText;
+    public RecyclerView recyclerView;
 
     public HashMap<String, Utmk> Pins = new HashMap<String, Utmk>();
     public HashMap<String, Marker> Markers = new HashMap<>();
     private int count = 1;
-    private String s = null;
+    private String infor = null;
     private String answer = null;
+    private int Token = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("MapActivity", "onCreate()");
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_map);
 
         TabHost tabHost1 = (TabHost) findViewById(R.id.tabHost1);
@@ -71,8 +77,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         eText = (TextView)findViewById(R.id.textView);
         answer = intent.getStringExtra("answer");
-        s = "Round: " + count + "\n" + "Your num is: " + answer;
-        eText.setText(s);
+        infor = "Round: " + count + "\n" + "Your num is: " + answer;
+        eText.setText(infor);
+
+        //recyclerView = (RecyclerView)findViewById(R.id.ryclerview);
 
         manager = SocketManager.getInstance();
 
@@ -130,27 +138,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //이거 핀찾는데에 쓸수있을거 같음
         naverMap.addOnLocationChangeListener(location ->
         {
-            naverMap.setLocationSource(locationSource);
+            //naverMap.setLocationSource(locationSource);
 
-            String tmp = new String();
+            String tmp = new String();//지울거
             Utmk locationUtmk = Utmk.valueOf(new LatLng(location.getLatitude(),location.getLongitude()));
             Iterator<Map.Entry<String, Utmk>> entriesA = Pins.entrySet().iterator();
-            while(entriesA.hasNext()){
+            while(entriesA.hasNext()) {
                 Map.Entry<String, Utmk> entry = entriesA.next();
-                if((Math.pow(entry.getValue().x - locationUtmk.x, 2) + Math.pow(entry.getValue().y - locationUtmk.y, 2)) <= Math.pow(15,2)) {
-                    Intent intent = new Intent(this, PopupActivity.class);
-                    intent.putExtra("data", "Test Popup");
-                    startActivityForResult(intent, 1);
-                    tmp = entry.getKey();
-                    Markers.get(tmp).setMap(null);
-                    Markers.remove(entry.getKey());
-
-                    Toast.makeText(MapActivity.this, "Correct Answer, Please wait", Toast.LENGTH_SHORT).show();
+                if ((Math.pow(entry.getValue().x - locationUtmk.x, 2) + Math.pow(entry.getValue().y - locationUtmk.y, 2)) <= Math.pow(15, 2)) {
+                    //서버에 공격권관련 처리요청후 공격권 변수 설정 Token, 그걸 intent에 실어서 보냄
+                    String activePin = "ARRIVE:"+entry.getKey();
+                    try {
+                        manager.send(activePin);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
 
             }
-            Pins.remove(tmp);
         });
 
     }
@@ -160,10 +166,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                //데이터 받기
+                //위에거 교체
                 count++;
-                s = "Round: " + count + "\n" + "Your num is: " + answer;
-                eText.setText(s);
+                infor = "Round: " + count + "\n" + "Your num is: " + answer;
+                eText.setText(infor);
             }
         }
     }
@@ -187,6 +193,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Utmk utmk = Utmk.valueOf(latLng);
 
                 Pins.put(name, utmk);
+            }
+            if(set[0].equals("UNABLE")){
+                Markers.get(set[1]).setMap(null);
+                Markers.remove(set[1]);
+                Pins.remove(set[1]);
+            }
+            if(set[0].equals("POPUP")){
+                Intent popup = new Intent(this, PopupActivity.class);
+                popup.putExtra("Token", parseInt(set[1]));
+                startActivityForResult(popup, 1);
             }
         }
 
