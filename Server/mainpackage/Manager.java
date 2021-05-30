@@ -9,7 +9,6 @@ public class Manager implements Runnable {
 	DataInputStream in;
 	User user = null;
 	
-	
 	String name, buffer;
 	int [] answer = new int[3];
 	
@@ -47,12 +46,29 @@ public class Manager implements Runnable {
 			user.sendEnable(name);
 			
 			buffer = in.readUTF();
-			//this.wait(10000);
 			
 			// Start Game
 			user.sendStartPin(name);
-			
 			user.sendPins(name);
+			
+			buffer = in.readUTF();
+			String [] set = buffer.split(":");
+			if(set[0].equals("ARRIVE") && set[1].equals( user.getStartPin(name) )) {
+				user.sendUnablePin(name, user.getStartPin(name));
+			}
+			
+			while(!user.isGameReady());
+			
+			user.sendAllisReady(name);
+			
+			while(user.getRound() <= 9) {
+				buffer = in.readUTF();
+				set = buffer.split(":");
+				if(set[0].equals("ARRIVE")) {
+					user.sendUnablePin(name, set[1]);
+				}
+			}
+			
 			while(true);
 			
 		} catch(Exception e) {

@@ -25,6 +25,7 @@ public class Server {
 				socket = server_socket.accept();
 				if(user.getCount() >= 2) {
 					System.out.println("Other client has connecet, but cannot join the game");
+					socket.close();
 				} else {					
 					thread[count] = new Thread(new Manager(socket, user));
 					thread[count].start();

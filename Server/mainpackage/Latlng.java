@@ -56,4 +56,10 @@ public class Latlng {
 
 		return pac;
 	}
+	
+	public void setPin(String pin, int n) {
+		for(int i = 0; i < 20; ++i) {
+			if(pin.equals(name[i])) enable[i] = 0;
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package mainpackage;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,13 +9,27 @@ import java.util.Iterator;
 public class User {
 	HashMap<String, DataOutputStream> clientmap = new HashMap<String, DataOutputStream>();
 	HashMap<String, Integer> nummap = new HashMap<String, Integer>();
+	HashMap<String, String> startmap = new HashMap<String, String>();
 	int[] enable = {0, 0};
 	int count = 0;
+	int round = 1;
 	
 	Latlng lng = new Latlng();
 	
 	public int getCount() {
 		return count;
+	}
+	
+	public String getStartPin(String name) {
+		return startmap.get(name);
+	}
+	
+	public int getRound() { return round; }
+	
+	
+	public boolean isGameReady() {
+		if(enable[0] == 3 && enable[1] == 3) return true;
+		else return false;
 	}
 	
 	public synchronized void sendPrev(String name) {
@@ -98,24 +113,21 @@ public class User {
         }
 	}
 	
-	public synchronized boolean getEnable() {
-		if(enable[0] == 2 && enable[1] == 2) return true;
-		return false;
-	}
-	
 	public synchronized void sendStartPin(String name) {
 		try {
 			if(nummap.get(name) == 0) {
 				clientmap.get(name).writeUTF("PIN:rainbow:35.2300507:129.0828376");
+				startmap.put(name, "rainbow");
 			} else {
 				clientmap.get(name).writeUTF("PIN:north:35.2355016:129.0828778");
+				startmap.put(name, "north");
 			}
 			clientmap.get(name).flush();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public synchronized void sendPins(String name) {
 		try {
 			DataOutputStream out = clientmap.get(name);
@@ -131,4 +143,37 @@ public class User {
 			e.printStackTrace();
 		}
 	}
+	
+	public synchronized void sendUnablePin(String name, String pin) {
+		try {
+			if(pin.equals("rainbow") || pin.equals("north")) {
+				clientmap.get(name).writeUTF("UNABLE:"+pin);
+				int clientNum = nummap.get(name);
+				enable[clientNum] = 3;
+			}
+			else {
+				Iterator<String> keys = clientmap.keySet().iterator();
+				while(keys.hasNext()) {
+					String clientName = (String)keys.next();
+					clientmap.get(clientName).writeUTF("UNABLE:"+pin);
+					clientmap.get(clientName).writeUTF("POPUP");
+				}
+				lng.setPin(pin, 0);
+				round++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void sendAllisReady(String name) {
+		try {
+			clientmap.get(name).writeUTF("START");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
 }
