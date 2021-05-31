@@ -25,10 +25,10 @@ public class User {
 		return startmap.get(name);
 	}
 	
-	public int getRound() { return round; }
+	public synchronized int getRound() { return round; }
 	
 	
-	public boolean isGameReady() {
+	public synchronized boolean isGameReady() {
 		if(enable[0] == 3 && enable[1] == 3) return true;
 		else return false;
 	}
@@ -38,6 +38,7 @@ public class User {
 			answer[nummap.get(name)][i] = ans[i];
 		}
 	}
+	
 	
 	public synchronized void sendPrev(String name) {
 		Iterator<String> keys = clientmap.keySet().iterator();
@@ -154,7 +155,7 @@ public class User {
 	public synchronized void sendUnablePin(String name, String pin) {
 		try {
 			if(pin.equals("rainbow") || pin.equals("north")) {
-				clientmap.get(name).writeUTF("UNABLE:"+pin);
+				//clientmap.get(name).writeUTF("UNABLE:"+pin);
 				int clientNum = nummap.get(name);
 				enable[clientNum] = 3;
 			}
@@ -162,11 +163,13 @@ public class User {
 				Iterator<String> keys = clientmap.keySet().iterator();
 				while(keys.hasNext()) {
 					String clientName = (String)keys.next();
-					clientmap.get(clientName).writeUTF("UNABLE:"+pin);
 					if(clientName.equals(name))
 						clientmap.get(clientName).writeUTF("POPUP:1");
-					else
+					else {
+						clientmap.get(clientName).writeUTF("UNABLE:"+pin);
 						clientmap.get(clientName).writeUTF("POPUP:0");
+					}
+						
 				}
 				lng.setPin(pin, 0);
 				round++;
@@ -185,5 +188,36 @@ public class User {
 		}
 	}
 
-
+	public synchronized void sendToast(String name, String msg) {
+		try {
+			clientmap.get(name).writeUTF("TOAST:"+msg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void matchAnswer(String name, int[] ans ) {
+		int strike = 0;
+		int ball = 0;
+		int oNum = nummap.get(name)*(-1) + 1;
+		
+		for(int i = 0; i < 3; ++i) {
+			if(ans[i] == answer[oNum][i]) strike++;
+		}
+		
+		for(int i = 0; i < 3; ++i) {
+			for(int j = 0; j < 3; ++j) {
+				if(ans[i] == answer[oNum][j]) ball++;
+			}
+		}
+		
+		try {
+			clientmap.get(name).writeUTF("RESULT:strike,"+strike+"ball,"+ball);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

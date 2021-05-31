@@ -146,6 +146,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             while(entriesA.hasNext()) {
                 Map.Entry<String, Utmk> entry = entriesA.next();
                 if ((Math.pow(entry.getValue().x - locationUtmk.x, 2) + Math.pow(entry.getValue().y - locationUtmk.y, 2)) <= Math.pow(15, 2)) {
+
+                    tmp = entry.getKey();
+                    Markers.get(tmp).setMap(null);
+                    Markers.remove(entry.getKey());
+                    Pins.remove(entry.getKey());
                     //서버에 공격권관련 처리요청후 공격권 변수 설정 Token, 그걸 intent에 실어서 보냄
                     String activePin = "ARRIVE:"+entry.getKey();
                     try {
@@ -194,16 +199,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 Pins.put(name, utmk);
             }
-            if(set[0].equals("UNABLE")){
+            else if(set[0].equals("UNABLE")){
                 Markers.get(set[1]).setMap(null);
                 Markers.remove(set[1]);
                 Pins.remove(set[1]);
             }
-            if(set[0].equals("POPUP")){
+            else if(set[0].equals("POPUP")){
                 Intent popup = new Intent(this, PopupActivity.class);
                 popup.putExtra("Token", parseInt(set[1]));
                 startActivityForResult(popup, 1);
             }
+            else if(set[0].equals("START")) {
+                Toast.makeText(MapActivity.this, "Now Game Start!!", Toast.LENGTH_SHORT).show();
+            }
+            else if(set[0].equals("TOAST")) {
+                Toast.makeText(MapActivity.this, set[1], Toast.LENGTH_SHORT).show();
+            }
+            else if(set[0].equals("RESULT")) {
+                Toast.makeText(MapActivity.this, set[1], Toast.LENGTH_SHORT).show();
+            }
+
         }
 
     }

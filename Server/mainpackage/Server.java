@@ -15,7 +15,7 @@ public class Server {
 	public Server() {
 		ServerSocket server_socket = null;
 		int count = 0;
-		Thread thread[] = new Thread[2];
+		Thread thread[] = new Thread[10];
 		
 		try {
 			server_socket = new ServerSocket(SERVER_PORT);
