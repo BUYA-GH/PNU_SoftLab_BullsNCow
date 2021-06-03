@@ -41,6 +41,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
+    private NaverMap Mymap;
 
     SocketManager manager = null;
 
@@ -53,6 +54,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String infor = null;
     private String answer = null;
     private int Token = 0;
+    ArrayList<listitem> items = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("MapActivity", "onCreate()");
@@ -100,7 +102,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         ListView listView = findViewById(R.id.history);
 
-        ArrayList<listitem> items = new ArrayList<>();
         items.add(new listitem("Round", "Answer", "Result"));//대체할까?
         items.add(new listitem("Round1", "---", "---"));
         items.add(new listitem("Round2", "---", "---"));
@@ -129,28 +130,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap)  {
+        Mymap = naverMap;
+        try {
+            manager.send("Go");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
 
         naverMap.setMinZoom(14.0);
         naverMap.setMaxZoom(18.0);
         naverMap.setExtent(new LatLngBounds(new LatLng(35.230009, 129.074514), new LatLng(35.237382,129.084256)));
-
-
-        //나중에 서버에서 받은것들만 처리
-        Iterator<Map.Entry<String, Utmk>> entries = Pins.entrySet().iterator();
-        while(entries.hasNext()) {
-            Map.Entry<String, Utmk> entry = entries.next();
-            Marker marker = new Marker();
-            LatLng latLng = entry.getValue().toLatLng();
-            marker.setPosition(latLng);
-            marker.setWidth(70);
-            marker.setHeight(70);
-            marker.setIconTintColor(Color.RED);
-
-            marker.setMap(naverMap);
-            Markers.put(entry.getKey(), marker);
-        }
 
 
         //gps로 위치추적하는거 만들어야되
@@ -188,7 +180,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 infor = "Round: " + count + "\n" + "Your num is: " + answer;
                 eText.setText(infor);
                 data.getStringExtra("result");//가져와서 저기 넣기
-
             }
         }
     }
@@ -211,7 +202,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 LatLng latLng = new LatLng(lat,longt);
                 Utmk utmk = Utmk.valueOf(latLng);
 
+                Marker marker = new Marker();
+                marker.setPosition(latLng);
+                marker.setWidth(70);
+                marker.setHeight(70);
+                marker.setIconTintColor(Color.RED);
+                marker.setMap(Mymap);
+
                 Pins.put(name, utmk);
+                Markers.put(name, marker);
             }
             else if(set[0].equals("UNABLE")){
                 RemoveMarker(set[1]);
@@ -226,6 +225,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
             else if(set[0].equals("RESULT")) {
                 Toast.makeText(MapActivity.this, set[1], Toast.LENGTH_SHORT).show();
+                items.get(count).result = set[1];
+                items.get(count).answer = set[2];
             }
 
         }

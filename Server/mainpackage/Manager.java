@@ -51,7 +51,6 @@ public class Manager implements Runnable {
 			// Start Game
 			System.out.println(name + " : Set Pins");
 			user.sendStartPin(name);
-			user.sendPins(name);
 			
 			buffer = in.readUTF();
 			String [] set = buffer.split(":");
@@ -65,7 +64,7 @@ public class Manager implements Runnable {
 			
 			System.out.println(name + " : All is ready");
 			user.sendAllisReady(name);
-			
+			user.sendPins(name);
 			while(user.getRound() <= 9) {
 				buffer = in.readUTF();
 				set = buffer.split(":");

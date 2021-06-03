@@ -48,7 +48,7 @@ public class PopupActivity extends Activity {
         } else {
             editText.setVisibility(View.GONE);
             txtText.setVisibility(View.VISIBLE);
-            close.setVisibility(View.GONE);//나중에 gone으로
+            close.setVisibility(View.GONE);
             //서버에서 라운드종료 신호를 받으면  이거 무한루프돌리는게 맞나?
             //어떤조건문 들어갈거임
             //close.performClick();
@@ -60,7 +60,8 @@ public class PopupActivity extends Activity {
     public void mOnClose(View v) {
         //데이터 전달하기
         try {
-            manager.send(editText.getText().toString());
+            String myanswer = editText.getText().toString();
+            manager.send(myanswer);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -81,6 +82,12 @@ public class PopupActivity extends Activity {
         return;
     }
     //그냥 서버로 보내고 형식에 맞으면 activity 종료만 시킬까? 확인->서버에서 이상무->종료->map에서 결과가지고 list에 저장
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        processIntent(intent);
+    }
+
     private void processIntent(Intent intent) {
         if (intent != null) {
             String buffer = intent.getStringExtra("Receive");

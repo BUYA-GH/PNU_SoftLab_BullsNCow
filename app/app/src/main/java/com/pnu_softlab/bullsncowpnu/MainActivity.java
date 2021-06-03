@@ -104,12 +104,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
 
         if(enable[0] == 2 && enable[1] == 2) {
-            try {
-                manager.send("GO");
-            } catch(RemoteException e) {
-                e.printStackTrace();
-            }
-
             // go to MapActivity
             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
             intent.putExtra("answer",answer);

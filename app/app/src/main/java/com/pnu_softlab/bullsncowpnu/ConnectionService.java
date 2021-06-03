@@ -158,8 +158,10 @@ public class ConnectionService extends Service {
                         Intent intent = null;
                         if(set[0].equals("OTHER") || set[0].equals("ANSWER") || set[0].equals("ENABLE") ) {
                             intent = new Intent(getApplicationContext(), MainActivity.class);
-                        } else {
+                        } else if(set[0].equals("UNABLE") || set[0].equals("POPUP") || set[0].equals("START") || set[0].equals("RESULT")){
                             intent = new Intent(getApplicationContext(), MapActivity.class);
+                        } else{
+                            intent = new Intent(getApplicationContext(), PopupActivity.class);
                         }
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("Receive", inBuffer);
