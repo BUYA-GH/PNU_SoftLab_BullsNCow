@@ -41,18 +41,10 @@ public class PopupActivity extends Activity {
             editText.setVisibility(View.VISIBLE);
             txtText.setVisibility(View.GONE);
             close.setVisibility(View.VISIBLE);
-
-            /*
-            여기서부터 숫자야구관련
-             */
         } else {
             editText.setVisibility(View.GONE);
             txtText.setVisibility(View.VISIBLE);
             close.setVisibility(View.GONE);
-            //서버에서 라운드종료 신호를 받으면  이거 무한루프돌리는게 맞나?
-            //어떤조건문 들어갈거임
-            //close.performClick();
-
         }
     }
 

@@ -213,7 +213,18 @@ public class User {
 		}
 		
 		try {
-			clientmap.get(name).writeUTF("RESULT:strike,"+strike+"ball,"+ball);
+			Iterator<String> keys = clientmap.keySet().iterator();
+			while(keys.hasNext()) {
+				String clientName = (String)keys.next();
+				if(clientName.equals(name)) {
+					clientmap.get(clientName).writeUTF("ROUNDF");
+					clientmap.get(clientName).writeUTF("RESULT:strike,"+strike+"ball,"+ball+":"+(ans[0]*100+ans[1]*10+ans[2]));
+				}
+				else {
+					clientmap.get(clientName).writeUTF("ROUNDF");
+					clientmap.get(clientName).writeUTF("RESULT:---:Opponent Turn");
+				}
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
