@@ -74,7 +74,7 @@ public class Manager implements Runnable {
 				if(set[0].equals("ARRIVE")) {
 					user.sendUnablePin(name, set[1]);
 				}
-				
+
 
 				while(true) {
 					buffer = in.readUTF();

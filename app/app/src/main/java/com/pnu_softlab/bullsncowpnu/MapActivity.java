@@ -7,6 +7,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.FusedLocationSource;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -95,6 +97,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
         mapFragment.getMapAsync(this);
+
+        ListView listView = findViewById(R.id.history);
+
+        ArrayList<listitem> items = new ArrayList<>();
+        items.add(new listitem("Round", "Answer", "Result"));//대체할까?
+        items.add(new listitem("Round1", "---", "---"));
+        items.add(new listitem("Round2", "---", "---"));
+        items.add(new listitem("Round3", "---", "---"));
+        items.add(new listitem("Round4", "---", "---"));
+        items.add(new listitem("Round5", "---", "---"));
+        items.add(new listitem("Round6", "---", "---"));
+        items.add(new listitem("Round7", "---", "---"));
+        items.add(new listitem("Round8", "---", "---"));
+        items.add(new listitem("Round9", "---", "---"));
+        MyListViewAdapter adapter = new MyListViewAdapter(items, getApplicationContext());
+
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -140,21 +159,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         {
             //naverMap.setLocationSource(locationSource);
 
-            String tmp = new String();//지울거
             Utmk locationUtmk = Utmk.valueOf(new LatLng(location.getLatitude(),location.getLongitude()));
             Iterator<Map.Entry<String, Utmk>> entriesA = Pins.entrySet().iterator();
             while(entriesA.hasNext()) {
                 Map.Entry<String, Utmk> entry = entriesA.next();
                 if ((Math.pow(entry.getValue().x - locationUtmk.x, 2) + Math.pow(entry.getValue().y - locationUtmk.y, 2)) <= Math.pow(15, 2)) {
-
-                    tmp = entry.getKey();
-                    Markers.get(tmp).setMap(null);
-                    Markers.remove(entry.getKey());
-                    Pins.remove(entry.getKey());
-                    //서버에 공격권관련 처리요청후 공격권 변수 설정 Token, 그걸 intent에 실어서 보냄
                     String activePin = "ARRIVE:"+entry.getKey();
                     try {
                         manager.send(activePin);
+                        RemoveMarker(entry.getKey());
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -163,7 +176,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             }
         });
-
     }
 
     @Override
@@ -175,6 +187,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 count++;
                 infor = "Round: " + count + "\n" + "Your num is: " + answer;
                 eText.setText(infor);
+                data.getStringExtra("result");//가져와서 저기 넣기
+
             }
         }
     }
@@ -200,9 +214,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Pins.put(name, utmk);
             }
             else if(set[0].equals("UNABLE")){
-                Markers.get(set[1]).setMap(null);
-                Markers.remove(set[1]);
-                Pins.remove(set[1]);
+                RemoveMarker(set[1]);
             }
             else if(set[0].equals("POPUP")){
                 Intent popup = new Intent(this, PopupActivity.class);
@@ -212,14 +224,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             else if(set[0].equals("START")) {
                 Toast.makeText(MapActivity.this, "Now Game Start!!", Toast.LENGTH_SHORT).show();
             }
-            else if(set[0].equals("TOAST")) {
-                Toast.makeText(MapActivity.this, set[1], Toast.LENGTH_SHORT).show();
-            }
             else if(set[0].equals("RESULT")) {
                 Toast.makeText(MapActivity.this, set[1], Toast.LENGTH_SHORT).show();
             }
 
         }
 
+    }
+
+    private void RemoveMarker(String s)
+    {
+        Markers.get(s).setMap(null);
+        Markers.remove(s);
+        Pins.remove(s);
     }
 }

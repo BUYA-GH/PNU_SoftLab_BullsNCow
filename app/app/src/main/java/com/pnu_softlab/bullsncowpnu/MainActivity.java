@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
     final int STATUS_CONNECTED = 1;
     final int STATUS_READY = 2;
 
-    String ip = "211.109.68.18";//전승윤
-    //String ip = "192.168.1.109";//유동운
+    //String ip = "211.109.68.18";//전승윤
+    String ip = "192.168.1.109";//유동운
     String name = null;
     String otherName = null;
     String answer = null;

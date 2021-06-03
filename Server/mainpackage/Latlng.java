@@ -1,65 +1,234 @@
 package mainpackage;
 
-import java.util.Random;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Iterator;
 
-public class Latlng {
-	// 중앙, 새벽별, 넉터, 건설관, 항공,
-	// 인문, 금정회관, 학생회관, 샛별회관, 문창회관,
-	// 예술관, 생물관, 언어교육원, 법학관, 웅비의탑,
-	// 실험동및전산원, 경영관, 화학관, 약학관, 자연과학관
+public class User {
+	HashMap<String, DataOutputStream> clientmap = new HashMap<String, DataOutputStream>();
+	HashMap<String, Integer> nummap = new HashMap<String, Integer>();
+	HashMap<String, String> startmap = new HashMap<String, String>();
+	int[] enable = {0, 0};
+	int[][] answer = { {0,0,0}, {0,0,0}}; 
+	int count = 0;
+	int round = 1;
 	
-	int number = 20;
+	Latlng lng = new Latlng();
 	
-	String [] name = {
-			"lib1", "lib2", "playground", "gonguri", "tesla",
-			"inmoon", "hall1", "hall2", "hall3", "hall4",
-			"art", "bio", "out_Glo", "law", "tower", 
-			"slave", "heo_polit", "chem", "drug", "bio_en"
-	};
+	public int getCount() {
+		return count;
+	}
 	
-	String [] lat = {
-			"35.233903", "35.235681", "35.231735", "35.231510", "35.233170",
-			"35.231859", "35.235318", "35.235325", "35.234214", "35.233923",
-			"35.232564", "35.234542", "35.235861", "35.236746", "35.230972",
-			"35.234987", "35.236312", "35.235166", "35.232568", "35.2337672137374"
-	};
+	public String getStartPin(String name) {
+		return startmap.get(name);
+	}
 	
-	String [] longt = {
-			"129.078703", "129.0816332", "129.082916", "129.080128", "129.08377",
-			"129.081144", "129.080495", "129.076707", "129.079518", "129.081941",
-			"129.077607", "129.081106", "129.083604", "129.078729", "129.0813167",
-			"129.082492", "129.079920", "129.077992", "129.078467", "129.08083534111876"
-	};
-	int [] enable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+	public synchronized int getRound() { return round; }
 	
-	public Latlng() {
-		Random r = new Random();
-		int a[] = new int[10];
+	
+	public synchronized boolean isGameReady() {
+		if(enable[0] == 3 && enable[1] == 3) return true;
+		else return false;
+	}
+	
+	public void setAnswer(String name, int[] ans) {
+		for(int i = 0; i < 3; ++i) {
+			answer[nummap.get(name)][i] = ans[i];
+		}
+	}
+	
+	
+	public synchronized void sendPrev(String name) {
+		Iterator<String> keys = clientmap.keySet().iterator();
+		try {
+			while(keys.hasNext() ) {
+				String otherName = (String)keys.next();
+				if(! otherName.equals(name) ) {
+					clientmap.get(otherName).writeUTF("OTHER:" + name);
+					clientmap.get(name).writeUTF("OTHER:" + otherName);
+					clientmap.get(otherName).writeUTF("ENABLE:" + name + ":" + enable[nummap.get(name)]);
+					clientmap.get(name).writeUTF("ENABLE:" + otherName + ":" + enable[nummap.get(otherName)]);
+					
+					clientmap.get(otherName).flush();
+					clientmap.get(name).flush();
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void AddName(String name, Socket socket) {
+		try {
+            clientmap.put(name, new DataOutputStream(socket.getOutputStream()));
+            nummap.put(name, count);
+            enable[count] = 1;
+            clientmap.get(name).writeUTF("ENABLE:" + name + ":" + enable[nummap.get(name)]);
+            System.out.println(name + " has successfully Connected!");
+            System.out.println("Num of Client : " + clientmap.size());
+            count++;
+        } catch(Exception e){
+        	e.printStackTrace();
+        }
+	}
+	
+	 public synchronized void RemoveClient(String name)  {
+		 try {
+			 clientmap.remove(name);
+			 nummap.remove(name);
+			 System.out.println(name + " has successfully UnConnected!");
+	         System.out.println("Num of Client : " + clientmap.size());
+	         count--;
+	     } catch(Exception e){
+	    	 e.printStackTrace();
+	     }
+	}
+	
+	public synchronized void sendAnswer(String name, int i) {
+		try {
+			DataOutputStream out = clientmap.get(name);
+			int clientNum = nummap.get(name);
+			if(i == 0) {
+				System.out.println(name + " 's answer is Fail");
+				out.writeUTF("ANSWER:Fail");
+				out.flush();
+			}
+			else {
+				System.out.println(name + " 's answer is Correct");
+				enable[clientNum] = 2;
+				out.writeUTF("ANSWER:Success");
+				out.flush();
+			}
+		} catch(Exception e){
+        	e.printStackTrace();
+        }
+	}
+	
+	public synchronized void sendEnable(String name) {
+		Iterator<String> keys = clientmap.keySet().iterator();
+		try {
+			while(keys.hasNext()) {
+				String otherName = (String)keys.next();
+				//clientmap.get(otherName).writeUTF("OTHER:" + name);
+				clientmap.get(otherName).writeUTF("ENABLE:" + name + ":" + enable[nummap.get(name)]);
+				
+				clientmap.get(otherName).flush();
+			}
+		} catch(Exception e){
+        	e.printStackTrace();
+        }
+	}
+	
+	public synchronized void sendStartPin(String name) {
+		try {
+			if(nummap.get(name) == 0) {
+				clientmap.get(name).writeUTF("PIN:rainbow:35.2300507:129.0828376");
+				startmap.put(name, "rainbow");
+			} else {
+				clientmap.get(name).writeUTF("PIN:north:35.2355016:129.0828778");
+				startmap.put(name, "north");
+			}
+			clientmap.get(name).flush();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public synchronized void sendPins(String name) {
+		try {
+			DataOutputStream out = clientmap.get(name);
+			String outBuffer = null;
+			for(int i = 0; i < 20; ++i) {
+				outBuffer = lng.getPacket(i);
+				if(outBuffer != null) {
+					out.writeUTF(outBuffer);
+					out.flush();
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void sendUnablePin(String name, String pin) {
+		try {
+			if(pin.equals("rainbow") || pin.equals("north")) {
+				//clientmap.get(name).writeUTF("UNABLE:"+pin);
+				int clientNum = nummap.get(name);
+				enable[clientNum] = 3;
+			}
+			else {
+				Iterator<String> keys = clientmap.keySet().iterator();
+				while(keys.hasNext()) {
+					String clientName = (String)keys.next();
+					if(clientName.equals(name))
+						clientmap.get(clientName).writeUTF("POPUP:1");
+					else {
+						clientmap.get(clientName).writeUTF("UNABLE:"+pin);
+						clientmap.get(clientName).writeUTF("POPUP:0");
+					}
+						
+				}
+				lng.setPin(pin, 0);
+				round++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void sendAllisReady(String name) {
+		try {
+			clientmap.get(name).writeUTF("START");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public synchronized void sendToast(String name, String msg) {
+		try {
+			clientmap.get(name).writeUTF("TOAST:"+msg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void matchAnswer(String name, int[] ans ) {
+		int strike = 0;
+		int ball = 0;
+		int oNum = nummap.get(name)*(-1) + 1;
 		
-		for(int i = 0; i < 10; ++i) {
-			a[i] = r.nextInt(number);
-			for(int j = 0; j < i; j++) {
-				if(a[i] == a[j]) i--;
+		for(int i = 0; i < 3; ++i) {
+			if(ans[i] == answer[oNum][i]) strike++;
+		}
+		
+		for(int i = 0; i < 3; ++i) {
+			for(int j = 0; j < 3; ++j) {
+				if(ans[i] == answer[oNum][j]) ball++;
 			}
 		}
 		
-		for(int i = 0; i < 10; ++i) {
-			enable[a[i]] = 1;
+		try {
+			Iterator<String> keys = clientmap.keySet().iterator();
+			while(keys.hasNext()) {
+				String clientName = (String)keys.next();
+				if(clientName.equals(name)) {
+					clientmap.get(clientName).writeUTF("RESULT:strike,"+strike+"ball,"+ball+":"+(ans[0]*100+ans[1]*10+ans[2]));
+					clientmap.get(clientName).writeUTF("ROUNDF");
+				}
+				else {
+					clientmap.get(clientName).writeUTF("RESULT:---:Opponent Turn");
+					clientmap.get(clientName).writeUTF("ROUNDF");
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
-	
-	public String getPacket(int i) {
-		String pac = null;
-		if(i>=0 && i < 20 && enable[i] == 1) {
-			pac = "PIN:" + name[i] + ":" + lat[i] + ":" + longt[i];
-		}
-
-		return pac;
-	}
-	
-	public void setPin(String pin, int n) {
-		for(int i = 0; i < 20; ++i) {
-			if(pin.equals(name[i])) enable[i] = 0;
-		}
+		
 	}
 }
