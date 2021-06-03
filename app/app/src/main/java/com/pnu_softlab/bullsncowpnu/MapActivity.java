@@ -54,6 +54,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String infor = null;
     private String answer = null;
     private int Token = 0;
+    ListView listView = null;
+    MyListViewAdapter adapter = null;
     ArrayList<listitem> items = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +102,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mapFragment.getMapAsync(this);
 
-        ListView listView = findViewById(R.id.history);
+        listView = findViewById(R.id.history);
 
         items.add(new listitem("Round", "Answer", "Result"));//대체할까?
         items.add(new listitem("Round1", "---", "---"));
@@ -112,7 +114,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         items.add(new listitem("Round7", "---", "---"));
         items.add(new listitem("Round8", "---", "---"));
         items.add(new listitem("Round9", "---", "---"));
-        MyListViewAdapter adapter = new MyListViewAdapter(items, getApplicationContext());
+        adapter = new MyListViewAdapter(items, getApplicationContext());
 
         listView.setAdapter(adapter);
     }
@@ -174,13 +176,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                //위에거 교체
-                count++;
-                infor = "Round: " + count + "\n" + "Your num is: " + answer;
-                eText.setText(infor);
-                data.getStringExtra("result");//가져와서 저기 넣기
-            }
+            if (resultCode == RESULT_OK);
         }
     }
 
@@ -225,8 +221,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
             else if(set[0].equals("RESULT")) {
                 Toast.makeText(MapActivity.this, set[1], Toast.LENGTH_SHORT).show();
-                items.get(count).result = set[1];
-                items.get(count).answer = set[2];
+                items.get(count).setter(set[2],set[1]);
+                listView.setAdapter(adapter);
+                count++;
+                infor = "Round: " + count + "\n" + "Your num is: " + answer;
+                eText.setText(infor);
             }
 
         }
