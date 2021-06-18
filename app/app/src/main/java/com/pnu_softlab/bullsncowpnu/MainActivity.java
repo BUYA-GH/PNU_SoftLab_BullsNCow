@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
     final int STATUS_CONNECTED = 1;
     final int STATUS_READY = 2;
 
-    //String ip = "211.109.68.18";//전승윤
-    String ip = "192.168.1.109";//유동운
+    String ip = "211.109.68.18";//전승윤
+    //String ip = "192.168.1.109";//유동운
     String name = null;
     String otherName = null;
     String answer = null;
@@ -107,10 +107,26 @@ public class MainActivity extends AppCompatActivity {
             // go to MapActivity
             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
             intent.putExtra("answer",answer);
-            startActivity(intent);
+            startActivityForResult(intent, 0);
         }
         else {
             Toast.makeText(this, "All player is not ready!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK);
+        }
+
+        String rst = data.getStringExtra("result");
+        Toast.makeText(this, "You " + rst, Toast.LENGTH_SHORT).show();
+        try {
+            manager.disconnect();
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 

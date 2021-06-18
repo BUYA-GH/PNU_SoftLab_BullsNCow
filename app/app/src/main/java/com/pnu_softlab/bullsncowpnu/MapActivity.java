@@ -178,6 +178,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (requestCode == 1) {
             if (resultCode == RESULT_OK);
         }
+
+        try {
+            manager.send("NEXT");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //안드로이드 백버튼 막기
+        return;
     }
 
     @Override
@@ -226,6 +238,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 count++;
                 infor = "Round: " + count + "\n" + "Your num is: " + answer;
                 eText.setText(infor);
+            }
+            else if(set[0].equals("END")) {
+                Toast.makeText(MapActivity.this, "Game has end", Toast.LENGTH_SHORT).show();
+
+                Intent endGame = new Intent();
+                endGame.putExtra("result", set[1]);
+                setResult(RESULT_OK, endGame);
+                // 종료하는거 넣어야됨
+                finish();
             }
 
         }
