@@ -197,7 +197,7 @@ public class User {
 		}
 	}
 	
-	public synchronized void matchAnswer(String name, int[] ans ) {
+	public synchronized int matchAnswer(String name, int[] ans ) {
 		int strike = 0;
 		int ball = 0;
 		int oNum = nummap.get(name)*(-1) + 1;
@@ -208,9 +208,13 @@ public class User {
 		
 		for(int i = 0; i < 3; ++i) {
 			for(int j = 0; j < 3; ++j) {
-				if(ans[i] == answer[oNum][j]) ball++;
+				if(ans[i] == answer[oNum][j] && i != j) {
+					ball++;
+				}
 			}
 		}
+		int clientNum = nummap.get(name);
+		if(strike == 3) enable[clientNum] = 4;
 		
 		try {
 			Iterator<String> keys = clientmap.keySet().iterator();
@@ -230,5 +234,24 @@ public class User {
 			e.printStackTrace();
 		}
 		
+		if(strike == 3) {
+			round = 10;
+			return 1;
+		}
+		
+		return 0;
+	}
+	
+	public synchronized void endGame(String name) {
+		try {
+			int clientNum = nummap.get(name);
+			if(enable[0] == enable[1]) clientmap.get(name).writeUTF("END:DRAW");
+			if(enable[clientNum] == 4) clientmap.get(name).writeUTF("END:WIN");
+			else clientmap.get(name).writeUTF("END:LOSE");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
