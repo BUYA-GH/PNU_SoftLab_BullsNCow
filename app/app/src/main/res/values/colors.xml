@@ -3,8 +3,13 @@
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="myBlue_200">#055CEA</color>
+    <color name="myBlue_700">#014D87</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="myField_200">#FF68D082</color>
+    <color name="myField_500">#248044</color>
+    <color name="myField_700">#10431D</color>
+    <color name="Dodgers">#FF005A9C</color>
+    <color name="Angles">#FFBC032B</color>
 </resources>

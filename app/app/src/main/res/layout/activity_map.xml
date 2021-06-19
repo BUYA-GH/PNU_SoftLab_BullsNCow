@@ -21,7 +21,7 @@
                 android:padding="5dp"
                 android:textSize="20dp"
                 android:lineSpacingExtra="5dp"
-                android:background="#4572C4"
+                android:background="@color/myField_500"
                 android:textColor="#FFFFFF"
                 android:text="TextView" />
             <!-- TabWidget의 id값이 반드시 "tabs"로 지정되어야 함. -->

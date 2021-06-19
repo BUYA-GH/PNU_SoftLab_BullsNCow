@@ -83,7 +83,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         eText = (TextView)findViewById(R.id.textView);
         answer = intent.getStringExtra("answer");
-        infor = "Round: " + count + "\n" + "Your num is: " + answer;
+        infor = "Round : " + count + "\n" + "Your num is : " + answer + " Left Pins : " + Pins.size();
         eText.setText(infor);
 
         //recyclerView = (RecyclerView)findViewById(R.id.ryclerview);
