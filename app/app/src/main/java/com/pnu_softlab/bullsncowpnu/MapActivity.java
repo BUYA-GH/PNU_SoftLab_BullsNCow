@@ -83,7 +83,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         eText = (TextView)findViewById(R.id.textView);
         answer = intent.getStringExtra("answer");
-        infor = "Round : " + count + "\n" + "Your num is : " + answer + " Left Pins : " + Pins.size();
+
+        infor = "Round : Tutorial\n" + "Your num is : " + answer;
+
         eText.setText(infor);
 
         //recyclerView = (RecyclerView)findViewById(R.id.ryclerview);
@@ -230,6 +232,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
             else if(set[0].equals("START")) {
                 Toast.makeText(MapActivity.this, "Now Game Start!!", Toast.LENGTH_SHORT).show();
+
+                infor = "Round: " + count + "\n" + "Your num is: " + answer;
+                eText.setText(infor);
+
             }
             else if(set[0].equals("RESULT")) {
                 Toast.makeText(MapActivity.this, set[1], Toast.LENGTH_SHORT).show();

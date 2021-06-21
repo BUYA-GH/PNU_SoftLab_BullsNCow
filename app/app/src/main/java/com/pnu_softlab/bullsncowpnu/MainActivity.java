@@ -8,9 +8,12 @@ import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +34,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
     final int STATUS_DISCONNECTED = 0;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         nameInput = findViewById(R.id.nameInput);
         answerInput = findViewById(R.id.answerNumInput);
         Log.i("MainActivity", "onCreate()");
@@ -84,8 +89,16 @@ public class MainActivity extends AppCompatActivity {
         textEnableMap.put(name, (TextView) findViewById(R.id.myTextEnable));
         clientNumMap.put(name, 0);
         textNameMap.get(name).setText("Name : " + name);
-        textEnableMap.get(name).setText("Enable : ");
+
+        textEnableMap.get(name).setText("Status : ");
         Toast.makeText(MainActivity.this, "Connected With Server", Toast.LENGTH_SHORT).show();
+
+        Button thisBtn = (Button)findViewById(R.id.socketConnectBtn);
+        thisBtn.setEnabled(false);
+
+        //Button ansBtn = (Button)findViewById(R.id.inputAnswerBtn);
+        //ansBtn.setEnabled(true);
+
     }
 
     public void sendAnswer(View v) throws RemoteException {
@@ -148,19 +161,32 @@ public class MainActivity extends AppCompatActivity {
                 textEnableMap.put(otherName, (TextView) findViewById(R.id.otherTextEnable));
                 clientNumMap.put(otherName, 1);
                 textNameMap.get(otherName).setText("Name : " + otherName);
-                textEnableMap.get(otherName).setText("Enable : ");
+
+                textEnableMap.get(otherName).setText("Status : ");
+
                 Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
             } else if (set[0].equals("ANSWER")) {
                 if (set[1].equals("Fail"))
                     Toast.makeText(MainActivity.this, "Wrong Answer, Try Again", Toast.LENGTH_SHORT).show();
-                else if (set[1].equals("Success"))
+
+                else if (set[1].equals("Success")) {
                     Toast.makeText(MainActivity.this, "Correct Answer, Please wait", Toast.LENGTH_SHORT).show();
+                    Button thisBtn = (Button)findViewById(R.id.inputAnswerBtn);
+                    thisBtn.setEnabled(false);
+                }
             } else if (set[0].equals("ENABLE")) {
-                textEnableMap.get(set[1]).setText("Enable : " + set[2]);
+                String msg = "";
+                if(set[2].equals("0")) msg = "Not Connected";
+                else if(set[2].equals("1")) msg = "Connected";
+                else if(set[2].equals("2")) msg = "Ready";
+
+                textEnableMap.get(set[1]).setText("Status : " + msg);
+
                 enable[clientNumMap.get(set[1])] = Integer.parseInt(set[2]);
                 Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
             }
         }
+
 
     }
 }
