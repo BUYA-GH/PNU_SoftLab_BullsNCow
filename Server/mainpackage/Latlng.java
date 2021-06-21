@@ -3,18 +3,18 @@ package mainpackage;
 import java.util.Random;
 
 public class Latlng {
-	// ì¤‘ì•™, ìƒˆë²½ë³„, ë„‰í„°, ê±´ì„¤ê´€, í•­ê³µ,
-	// ì¸ë¬¸, ê¸ˆì •íšŒê´€, í•™ìƒíšŒê´€, ìƒ›ë³„íšŒê´€, ë¬¸ì°½íšŒê´€,
-	// ì˜ˆìˆ ê´€, ìƒë¬¼ê´€, ì–¸ì–´êµìœ¡ì›, ë²•í•™ê´€, ì›…ë¹„ì˜íƒ‘,
-	// ì‹¤í—˜ë™ë°ì „ì‚°ì›, ê²½ì˜ê´€, í™”í•™ê´€, ì•½í•™ê´€, ìì—°ê³¼í•™ê´€
+	// Áß¾Ó, »õº®º°, ³ËÅÍ, °Ç¼³°ü, Ç×°ø,
+	// ÀÎ¹®, ±İÁ¤È¸°ü, ÇĞ»ıÈ¸°ü, »ûº°È¸°ü, ¹®Ã¢È¸°ü,
+	// ¿¹¼ú°ü, »ı¹°°ü, ¾ğ¾î±³À°¿ø, ¹ıÇĞ°ü, ¿õºñÀÇÅ¾,
+	// ½ÇÇèµ¿¹×Àü»ê¿ø, °æ¿µ°ü, »ê¾÷Çù·Â°ü, ¾àÇĞ°ü, ÀÚ¿¬°úÇĞ°ü
 	
 	int number = 20;
 	
 	String [] name = {
-			"lib1", "lib2", "playground", "gonguri", "tesla",
-			"inmoon", "hall1", "hall2", "hall3", "hall4",
-			"art", "bio", "out_Glo", "law", "tower", 
-			"slave", "heo_polit", "chem", "drug", "bio_en"
+			"mainLib", "secLib", "playground", "architecture", "aviation",
+			"humanities", "geumjung", "student", "lucifer", "munchang",
+			"art", "biology", "language", "law", "tower", 
+			"studies", "business", "chemical", "industry", "nature"
 	};
 	
 	String [] lat = {
