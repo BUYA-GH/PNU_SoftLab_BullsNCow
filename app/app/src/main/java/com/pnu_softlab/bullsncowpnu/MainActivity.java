@@ -1,14 +1,19 @@
 package com.pnu_softlab.bullsncowpnu;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-<<<<<<< Updated upstream
-=======
+
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,16 +34,33 @@ import com.naver.maps.map.util.FusedLocationSource;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
->>>>>>> Stashed changes
+
 
 public class MainActivity extends AppCompatActivity {
+    final int STATUS_DISCONNECTED = 0;
+    final int STATUS_CONNECTED = 1;
+    final int STATUS_READY = 2;
+
+    String ip = "211.109.68.18";//전승윤
+    //String ip = "192.168.1.109";//유동운
+    String name = null;
+    String otherName = null;
+    String answer = null;
+    SocketManager manager = null;
+
+    EditText nameInput;
+    EditText answerInput;
+
+    HashMap<String, TextView> textNameMap = new HashMap<String, TextView>();
+    HashMap<String, TextView> textEnableMap = new HashMap<String, TextView>();
+    HashMap<String, Integer> clientNumMap = new HashMap<String, Integer>();
+    int[] enable = {0, 0};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-<<<<<<< Updated upstream
-=======
+
         nameInput = findViewById(R.id.nameInput);
         answerInput = findViewById(R.id.answerNumInput);
         Log.i("MainActivity", "onCreate()");
@@ -67,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         textEnableMap.put(name, (TextView) findViewById(R.id.myTextEnable));
         clientNumMap.put(name, 0);
         textNameMap.get(name).setText("Name : " + name);
+
         textEnableMap.get(name).setText("Status : ");
         Toast.makeText(MainActivity.this, "Connected With Server", Toast.LENGTH_SHORT).show();
 
@@ -75,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Button ansBtn = (Button)findViewById(R.id.inputAnswerBtn);
         //ansBtn.setEnabled(true);
+
     }
 
     public void sendAnswer(View v) throws RemoteException {
@@ -137,11 +161,14 @@ public class MainActivity extends AppCompatActivity {
                 textEnableMap.put(otherName, (TextView) findViewById(R.id.otherTextEnable));
                 clientNumMap.put(otherName, 1);
                 textNameMap.get(otherName).setText("Name : " + otherName);
+
                 textEnableMap.get(otherName).setText("Status : ");
+
                 Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
             } else if (set[0].equals("ANSWER")) {
                 if (set[1].equals("Fail"))
                     Toast.makeText(MainActivity.this, "Wrong Answer, Try Again", Toast.LENGTH_SHORT).show();
+
                 else if (set[1].equals("Success")) {
                     Toast.makeText(MainActivity.this, "Correct Answer, Please wait", Toast.LENGTH_SHORT).show();
                     Button thisBtn = (Button)findViewById(R.id.inputAnswerBtn);
@@ -154,11 +181,12 @@ public class MainActivity extends AppCompatActivity {
                 else if(set[2].equals("2")) msg = "Ready"
                         ;
                 textEnableMap.get(set[1]).setText("Status : " + msg);
+
                 enable[clientNumMap.get(set[1])] = Integer.parseInt(set[2]);
                 Log.d("receiver", "Enable is : " + enable[0] + " " + enable[1]);
             }
         }
 
->>>>>>> Stashed changes
+
     }
 }

@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     final int STATUS_DISCONNECTED = 0;
     final int STATUS_CONNECTED = 1;
 
-    String ip = "211.109.68.18";
+    String ip = "192.168.35.105";//유동운
     String name = null;
     String otherName = null;
     SocketManager manager = null;
@@ -85,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
         if (manager.getStatus() == STATUS_CONNECTED) {
             String answer = answerInput.getText().toString();
             manager.send(answer);
+            Intent intent = new Intent(this, MapActivity.class);
+            intent.putExtra("data", "Test Popup");
+            startActivityForResult(intent, 1);
 
         } else {
             Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
@@ -98,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "not connected to server", Toast.LENGTH_SHORT).show();
         }
     }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

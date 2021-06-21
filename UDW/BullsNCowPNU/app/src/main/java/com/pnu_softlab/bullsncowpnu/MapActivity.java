@@ -3,6 +3,8 @@ package com.pnu_softlab.bullsncowpnu;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ public class MapActivity extends AppCompatActivity
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
 
+
     public TextView eText;
 
     //pin 관련 나중에 pin지우고 LatLng로 교체하고 밑에 고치는게 나을듯
@@ -57,8 +60,7 @@ public class MapActivity extends AppCompatActivity
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_map);
 
         //위에서 받아서 스트링만들고 그거 출력
         eText = (TextView)findViewById(R.id.textView);
@@ -67,28 +69,15 @@ public class MapActivity extends AppCompatActivity
 
         locationSource =
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-        CameraPosition cameraPosition = new CameraPosition(
-                new LatLng(35.230974, 129.082301),
-                16,
-                0,
-                0
-        );
-
-        NaverMapOptions options = new NaverMapOptions()
-                .camera(cameraPosition)
-                .locationButtonEnabled(true);
 
 
         FragmentManager fm = getSupportFragmentManager();
         MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
 
         if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance(options);
+            mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map, mapFragment).commit();
         }
-
-        mapFragment.getMapAsync(this);
-
         pin rainbow = new pin(35.2300507,129.0828376);
         Pins.put("rainbow", rainbow);
         pin north = new pin(35.2355016, 129.0828778);
@@ -134,6 +123,8 @@ public class MapActivity extends AppCompatActivity
         Pins.put("drug", drug);//약학관
         pin bio_en = new pin(35.2337672137374, 129.08083534111876);
         Pins.put("bio_en", bio_en);//자연과학관
+
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -148,7 +139,7 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
+    public void onMapReady(@NonNull NaverMap naverMap)  {
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
