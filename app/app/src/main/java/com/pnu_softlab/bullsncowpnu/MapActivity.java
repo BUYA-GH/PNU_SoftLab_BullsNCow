@@ -27,7 +27,9 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.util.ArrayList;
@@ -46,7 +48,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     SocketManager manager = null;
 
     public TextView eText;
-    public RecyclerView recyclerView;
 
     public HashMap<String, Utmk> Pins = new HashMap<String, Utmk>();
     public HashMap<String, Marker> Markers = new HashMap<>();
@@ -57,6 +58,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     ListView listView = null;
     MyListViewAdapter adapter = null;
     ArrayList<listitem> items = new ArrayList<>();
+    InfoWindow infoWindow = new InfoWindow();
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("MapActivity", "onCreate()");
@@ -87,8 +89,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         infor = "Round : Tutorial\n" + "Your num is : " + answer;
 
         eText.setText(infor);
-
-        //recyclerView = (RecyclerView)findViewById(R.id.ryclerview);
 
         manager = SocketManager.getInstance();
 
@@ -218,7 +218,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 marker.setHeight(70);
                 marker.setIconTintColor(Color.RED);
                 marker.setMap(Mymap);
+                marker.setOnClickListener(new Overlay.OnClickListener() {
+                    @Override
+                    public boolean onClick(@NonNull Overlay overlay) {
+                        if(marker.getInfoWindow() ==null){
+                            ViewGroup rootView = (ViewGroup)findViewById(R.id.map);
+                            MyinforAdapter adapter = new MyinforAdapter(MapActivity.this, rootView, name);
 
+                            infoWindow.setAdapter(adapter);
+                            infoWindow.open(marker);
+                        }
+                        else{
+                            infoWindow.close();
+                        }
+
+                        return false;
+                    }
+                });
                 Pins.put(name, utmk);
                 Markers.put(name, marker);
             }
