@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:text="Notice"
+            android:id="@+id/timer"
             android:textSize="20sp"
             android:textColor="#ffffff"
             android:gravity="center"
@@ -29,6 +29,7 @@
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/txtText"
+            android:text="oppenent's turn please wait"
             android:textSize="15sp"
             android:textColor="#000"
             android:alpha="0.87"

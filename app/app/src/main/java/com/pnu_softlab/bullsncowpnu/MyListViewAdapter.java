@@ -40,13 +40,13 @@ public class MyListViewAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.listview_custom, viewGroup, false);
 
-        TextView tv_name = view.findViewById(R.id.textview_name);
+        TextView tv_name = view.findViewById(R.id.textview_round);
         tv_name.setText(items.get(i).round);
 
-        TextView tv_gender = view.findViewById(R.id.textview_gender);
+        TextView tv_gender = view.findViewById(R.id.textview_answer);
         tv_gender.setText(items.get(i).answer);
 
-        TextView tv_phone = view.findViewById(R.id.textview_phone);
+        TextView tv_phone = view.findViewById(R.id.textview_result);
         tv_phone.setText(items.get(i).result);
 
         return view;

@@ -8,20 +8,20 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/textview_name"
+        android:id="@+id/textview_round"
         android:textSize="10dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
     <TextView
-        android:id="@+id/textview_phone"
+        android:id="@+id/textview_answer"
         android:textSize="10dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/textview_gender"
+        android:id="@+id/textview_result"
         android:textSize="10dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

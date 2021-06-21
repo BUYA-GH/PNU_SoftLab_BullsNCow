@@ -3,6 +3,7 @@ package com.pnu_softlab.bullsncowpnu;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.RemoteException;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ public class PopupActivity extends Activity {
 
     TextView txtText;
     EditText editText;
+    TextView timer;
     Button close;
 
 
@@ -32,10 +34,28 @@ public class PopupActivity extends Activity {
         //UI 객체생성
         txtText = (TextView) findViewById(R.id.txtText);
         editText = (EditText) findViewById(R.id.etext);
+        timer  = (TextView) findViewById(R.id.timer);
         close = (Button) findViewById(R.id.closeBtn);
 
         //데이터 가져오기
         Intent intent = getIntent();
+        CountDownTimer countDownTimer = new CountDownTimer(120000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                int min = (int) (millisUntilFinished/60000);
+                int sec = (int) (millisUntilFinished%60000/1000);
+                String remain = String.format("%02d : %02d", min, sec);
+                timer.setText(remain);
+            }
+
+            public void onFinish() {
+                try {
+                    manager.send("timeOut");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }.start();
 
         if (intent.getIntExtra("Token", 0) == 1) {
             editText.setVisibility(View.VISIBLE);

@@ -80,6 +80,10 @@ public class Manager implements Runnable {
 					while(true) {
 						buffer = in.readUTF();
 						//System.out.println(buffer + "is answer?");
+						if(buffer.equals("timeOut")) {
+							user.timeOut();
+							break;
+						}
 						System.out.println(name + " : said " + buffer + " will be answer");
 						int a = Integer.parseInt(buffer);
 						for(int i = 0; i < 3; ++i ) {

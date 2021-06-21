@@ -226,7 +226,7 @@ public class User {
 				}
 				else {
 					clientmap.get(clientName).writeUTF("ROUNDF");
-					clientmap.get(clientName).writeUTF("RESULT:---:Opponent Turn");
+					clientmap.get(clientName).writeUTF("RESULT:Opponent Turn:---");
 				}
 			}
 		} catch (IOException e) {
@@ -249,6 +249,20 @@ public class User {
 			if(enable[clientNum] == 4) clientmap.get(name).writeUTF("END:WIN");
 			else clientmap.get(name).writeUTF("END:LOSE");
 			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void timeOut() {
+		try {
+			Iterator<String> keys = clientmap.keySet().iterator();
+			while(keys.hasNext()) {
+				String clientName = (String)keys.next();
+				clientmap.get(clientName).writeUTF("ROUNDF");
+				clientmap.get(clientName).writeUTF("RESULT:TimeOut:---");
+				}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
