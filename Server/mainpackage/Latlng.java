@@ -11,7 +11,7 @@ public class Latlng {
 	int number = 20;
 	
 	String [] name = {
-			"mainLib", "secLib", "playground", "architecture", "aviation",
+			"mainlib", "seclib", "playground", "architecture", "aviation",
 			"humanities", "geumjung", "student", "lucifer", "munchang",
 			"art", "biology", "language", "law", "tower", 
 			"studies", "business", "chemical", "industry", "nature"
