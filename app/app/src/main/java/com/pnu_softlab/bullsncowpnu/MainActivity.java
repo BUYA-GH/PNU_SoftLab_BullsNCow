@@ -178,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
                 String msg = "";
                 if(set[2].equals("0")) msg = "Not Connected";
                 else if(set[2].equals("1")) msg = "Connected";
-                else if(set[2].equals("2")) msg = "Ready"
-                        ;
+                else if(set[2].equals("2")) msg = "Ready";
+
                 textEnableMap.get(set[1]).setText("Status : " + msg);
 
                 enable[clientNumMap.get(set[1])] = Integer.parseInt(set[2]);
